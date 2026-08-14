@@ -1,0 +1,32 @@
+name: Build Windows EXE
+
+# 什麼時候會自動觸發打包
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # 讓你可以在 GitHub 網頁上手動按按鈕觸發
+
+jobs:
+  build:
+    runs-on: windows-latest   # 使用雲端的 Windows 環境（免費）
+
+    steps:
+      - name: 取得程式碼
+        uses: actions/checkout@v4
+
+      - name: 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安裝 PyInstaller
+        run: pip install pyinstaller
+
+      - name: 打包成單一 exe
+        run: pyinstaller --onefile --windowed --name 計算機 calculator.py
+
+      - name: 上傳打包結果
+        uses: actions/upload-artifact@v4
+        with:
+          name: 計算機-windows-exe
+          path: dist/計算機.exe
